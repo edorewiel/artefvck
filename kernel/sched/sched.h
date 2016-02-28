@@ -374,6 +374,10 @@ struct root_domain {
 	struct rcu_head rcu;
 	cpumask_var_t span;
 	cpumask_var_t online;
+	
+	/* Indicate more than one runnable task for any CPU */
+	bool overload;
+
 
 	/*
 	 * The "RT overload" flag: it gets set if a CPU has more than
@@ -1112,6 +1116,11 @@ static inline u64 steal_ticks(u64 steal)
 static inline void inc_nr_running(struct rq *rq)
 {
 	rq->nr_running++;
+
+	if (rq->nr_running >= 2) {
+ 		if (!rq->rd->overload)
+ 			rq->rd->overload = true;
+ 	}
 
 #ifdef CONFIG_NO_HZ_FULL
 	if (rq->nr_running == 2) {
