@@ -68,10 +68,7 @@ lookup_exec_domain(unsigned int personality)
 				goto out;
 	}
 
-ifdef CONFIG_MODULES
-	read_unlock(&exec_domains_lock);
-	request_module("personality-%d", pers);
-	read_lock(&exec_domains_lock);
+ifdef 0;
 
 	for (ep = exec_domains; ep; ep = ep->next) {
 		if (pers >= ep->pers_low && pers <= ep->pers_high)
